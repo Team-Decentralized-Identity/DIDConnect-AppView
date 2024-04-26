@@ -34,6 +34,10 @@ For this test we will be testing the following user cases
 - npm install 
 - npm run dev
 
+**Login Testing Info**
+- Email: didconnect440@gmail.com
+- Pass: Golions2024
+
 **User Stories**
 [Note: This is very watered down]
 - Log in with a password and user name.
