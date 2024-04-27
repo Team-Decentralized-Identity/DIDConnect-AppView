@@ -1,20 +1,35 @@
 <script setup lang="ts">
-import { reactive } from "vue";
-
+import { reactive } from "vue"; // remove the duplicate import of 'ref'
 import ButtonAsync from "@/components/common/ButtonAsync.vue";
 import ModalChangeHandle from "@/components/ModalChangeHandle.vue";
-import { updateSettings,useSettings } from "@/lib/settings";
-import { deleteSession } from "@/lib/bsky";
+import { useSettings, updateSettings } from "@/lib/settings";
+import { deleteSession, exportUserData } from '@/lib/bsky';
 
 const settings = useSettings();
 const state = reactive({
   showsModalChangeHandle: false,
   loadingModalChangeHandle: false,
+  exportStatus: '' // declare exportStatus here to fix the related error
 });
+// Methods
 const logout = () => {
   deleteSession();
-  location.reload();
+  window.location.reload(); // Use window.location.reload()
 };
+
+const exportAccountData = async () => {
+  console.log('Export button clicked'); // This should show up in the console
+  state.exportStatus = 'Exporting data...';
+  try {
+    const exportSuccess = await exportUserData();
+    state.exportStatus = exportSuccess ? 'Data exported successfully.' : 'Failed to export data.';
+  } catch (error) {
+    state.exportStatus = 'An error occurred during export.';
+    console.error('Export error:', error);
+  }
+};
+
+
 </script>
 
 <template>
@@ -41,15 +56,13 @@ const logout = () => {
 >
   Edit your handle...
 </ButtonAsync>
-
   </div>
-  
-<div>
-  <button class="btn btn-link migrate-button" @click="migrate">
-  Account Migration
-  </button>
-</div>
-
+  <div>
+    <button class="btn btn-link export-button" @click="exportAccountData">
+      Export account data
+    </button>
+    <p>{{ state.exportStatus }}</p>
+  </div>
 <button class="btn btn-link logout-button" @click="logout">
   Logout
 </button>
@@ -65,31 +78,19 @@ const logout = () => {
   </Suspense>
 </template>
 
+
 <style scoped>
 .btn-link.logout-button {
   padding: 8px 16px; 
   font-size: 16px; 
   background-image: linear-gradient(145deg, #b8d8be, #b8d8be); 
-  color: black !important;
+  color: rgb(10, 9, 9) !important;
   border: none; 
   border-radius: 5px; 
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); 
   transition: all 0.3s ease; 
   cursor: pointer; 
-  margin-top: 30px;
-}
-
-.btn-link.migrate-button {
-  padding: 8px 16px; 
-  font-size: 16px; 
-  background-image: linear-gradient(145deg, #b8d8be, #b8d8be); 
-  color: black !important;
-  border: none; 
-  border-radius: 5px; 
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); 
-  transition: all 0.3s ease; 
-  cursor: pointer; 
-  margin-top: 30px;
+  margin-top: 3px;
 }
 
 .btn-link.change-handle {
@@ -103,5 +104,30 @@ const logout = () => {
   transition: all 0.3s ease;
   cursor: pointer;
   margin-top: .9em; 
+}
+
+.btn-link.export-button {
+  padding: 8px 16px; 
+  font-size: 16px; 
+  background-image: linear-gradient(145deg, #b8d8be, #b8d8be); 
+  color: rgb(10, 9, 9) !important;
+  border: none; 
+  border-radius: 5px; 
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); 
+  transition: all 0.3s ease; 
+  cursor: pointer; 
+  margin-top: 30px;
+}
+
+.export-status.success {
+  color: #b8d8be; /* green for success messages */
+}
+
+.export-status.error {
+  color: #f6bdc3; /* red for error messages */
+}
+
+p, p code {
+    color: #32b643;
 }
 </style>

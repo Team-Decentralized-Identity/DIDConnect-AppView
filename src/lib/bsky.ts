@@ -17,7 +17,6 @@ import {
 import { AtUri } from "@atproto/uri";
 
 import { Overwrite } from "./well-typed";
-
 // Re-export app.bsky entity types
 export type Facet = Overwrite<
   AppBskyRichtextFacet.Main,
@@ -431,3 +430,78 @@ export const parseUri = (uri: string) => {
     rkey: aturi.rkey,
   };
 };
+
+// src/lib/bsky.ts
+export const exportUserData = async () => {
+  // Make sure the user session is present
+  if (!self) {
+    console.error('No user session is available.');
+    return false;
+  }
+  // Construct the export URL using the DID from the user session
+  const { did } = self;
+  const exportUrl = `https://bsky.social/xrpc/com.atproto.sync.getRepo?did=${did}`;
+  try {
+    // Attempt to fetch the data
+    const response = await fetch(exportUrl);
+    // Process the response data
+
+    const carData = await response.blob();
+    if (carData.size === 0) {
+      // If the blob size is zero, log and throw an error
+      console.error('Received empty data blob.');
+      throw new Error('Received empty data blob.');
+    }
+    // Create an object URL for the blob
+    const url = window.URL.createObjectURL(carData);
+    const a = document.createElement('a');
+    a.style.display = 'none';
+    a.href = url;
+    a.download = `${did}.car`; // Name the download file as the DID of the user
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url); // Clean up the object URL
+    console.log('Data export initiated successfully.');
+    return true;
+  } catch (error) {
+    // Log any errors that occur during the export
+    console.error('Error exporting user data:', error);
+    return false;
+  }
+};
+// src/lib/bsky.ts
+// export const exportUserData = async () => {
+//     // Make sure the user session is present
+//   if (!self) {
+//     console.error('No user session is available');
+//     return false;
+//   }
+//     // Construct the export URL using the DID from the user session
+
+//     const { did } = self; // Assuming self is the user's current session object
+//     const exportUrl = `https://bsky.social/xrpc/com.atproto.sync.getRepo?did=${did}`;
+//     //fetching data
+//     try {
+//     const response = await fetch(exportUrl);
+//     // Check the response status
+//     if (!response.ok) throw new Error('Failed to fetch data.');
+
+//// Initiating download
+// If the response is not OK, log the status and throw an error
+//     const carData = await response.blob();
+//     const url = window.URL.createObjectURL(carData);
+//     const a = document.createElement('a');
+//     a.style.display = 'none'; // Ensure the element is not visible
+//     a.href = url;
+//     a.download = `${did}.car`; // Names the download file as the DID of the user
+//     document.body.appendChild(a);
+//     a.click();
+//     document.body.removeChild(a);
+//     window.URL.revokeObjectURL(url);
+//     return true;
+//   } catch (error) {
+//     console.error('Error exporting user data:', error);
+//     return false;
+//   }
+// };
