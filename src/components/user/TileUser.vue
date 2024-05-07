@@ -15,7 +15,7 @@ defineProps({
 </script>
 
 <template>
-  <article class="tile-user tile hoverable">
+  <article class="tile-user tile">
     <div class="tile-icon mr-1">
       <Avatar
         :src="user.avatar"

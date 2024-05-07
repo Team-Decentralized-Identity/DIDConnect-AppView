@@ -17,6 +17,7 @@
     "@atproto/api": "^0.2.5",
     "@atproto/uri": "^0.0.2",
     "@tanstack/vue-query": "^4.27.0",
+    "axios": "^1.6.8",
     "bootstrap-icons": "^1.10.3",
     "fslightbox-vue": "^2.1.1",
     "spectre.css": "^0.5.9",

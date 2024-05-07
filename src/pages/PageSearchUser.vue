@@ -46,17 +46,19 @@ const submit = async () => {
     </div>
   </template>
   <template v-if="state.users.length > 0">
-    <TileUser
+    <div class = "user-container">
+      <TileUser
       v-for="user in state.users"
       :key="user.handle"
       class="py-2 my-2"
       :user="user"
     />
+    </div>
   </template>
 </template>
 
 <style scoped>
 .tile:hover {
-  background: #f1f1fc;
+  background: #3e423e;
 }
 </style>

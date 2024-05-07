@@ -4,12 +4,17 @@ import { reactive } from "vue";
 import ButtonAsync from "@/components/common/ButtonAsync.vue";
 import ModalChangeHandle from "@/components/ModalChangeHandle.vue";
 import { updateSettings,useSettings } from "@/lib/settings";
+import { deleteSession } from "@/lib/bsky";
 
 const settings = useSettings();
 const state = reactive({
   showsModalChangeHandle: false,
   loadingModalChangeHandle: false,
 });
+const logout = () => {
+  deleteSession();
+  location.reload();
+};
 </script>
 
 <template>
@@ -28,14 +33,26 @@ const state = reactive({
     </label>
   </div>
   <div>
-    <ButtonAsync
-      class="btn"
-      :force-loading="state.loadingModalChangeHandle"
-      @click="state.showsModalChangeHandle = true"
-    >
-      Edit your handle...
-    </ButtonAsync>
+
+<ButtonAsync
+  class="btn btn-link change-handle" 
+  :force-loading="state.loadingModalChangeHandle"
+  @click="state.showsModalChangeHandle = true"
+>
+  Edit your handle...
+</ButtonAsync>
+
   </div>
+  
+<div>
+  <button class="btn btn-link migrate-button" @click="migrate">
+  Account Migration
+  </button>
+</div>
+
+<button class="btn btn-link logout-button" @click="logout">
+  Logout
+</button>
   <Suspense
     @pending="state.loadingModalChangeHandle = true"
     @resolve="state.loadingModalChangeHandle = false"
@@ -47,3 +64,44 @@ const state = reactive({
     />
   </Suspense>
 </template>
+
+<style scoped>
+.btn-link.logout-button {
+  padding: 8px 16px; 
+  font-size: 16px; 
+  background-image: linear-gradient(145deg, #b8d8be, #b8d8be); 
+  color: black !important;
+  border: none; 
+  border-radius: 5px; 
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); 
+  transition: all 0.3s ease; 
+  cursor: pointer; 
+  margin-top: 30px;
+}
+
+.btn-link.migrate-button {
+  padding: 8px 16px; 
+  font-size: 16px; 
+  background-image: linear-gradient(145deg, #b8d8be, #b8d8be); 
+  color: black !important;
+  border: none; 
+  border-radius: 5px; 
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); 
+  transition: all 0.3s ease; 
+  cursor: pointer; 
+  margin-top: 30px;
+}
+
+.btn-link.change-handle {
+  padding: 8px 16px; 
+  font-size: 16px; 
+  background-image: linear-gradient(145deg, #b8d8be, #b8d8be); 
+  color: black !important;
+  border: none; 
+  border-radius: 5px; 
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); 
+  transition: all 0.3s ease;
+  cursor: pointer;
+  margin-top: .9em; 
+}
+</style>

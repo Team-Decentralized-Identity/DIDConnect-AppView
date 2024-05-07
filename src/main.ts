@@ -13,6 +13,6 @@ createApp(App).use(VueQueryPlugin, { queryClient }).use(router).mount("#app");
 
 tryResumeSession().then(({ success }) => {
   if (!success) {
-    router.replace({ name: "login" });
+    router.replace({ name: "main" });
   }
 });

@@ -1,5 +1,3 @@
-# Skylight
+# DIDConnect
 
-Minimal bsky web client implementation.
-
-https://penpenpng.github.io/skylight/
+A decentralized web client

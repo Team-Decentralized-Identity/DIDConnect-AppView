@@ -48,8 +48,9 @@ main {
 <style>
 body,
 #app {
-  width: 100%;
+  width: 100%; /* Keeps the full width of the viewport */
   margin: 0;
+  overflow-y: auto; /* This allows scrolling on the Y-axis if the content overflows */
 }
 
 #app {
